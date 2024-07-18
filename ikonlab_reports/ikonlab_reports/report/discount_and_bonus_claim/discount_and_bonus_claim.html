@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .address {
+            margin-bottom: 15px;
+        }
+
+        .address p {
+            margin: 0;
+        }
+
+        .contact-info {
+            margin-bottom: 10px;
+        }
+
+        .contact-info p {
+            margin: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .date {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .print-format {
+            padding: 1mm;
+            font-size: 11.0pt !important;
+        }
+
+        .print-format td {
+            vertical-align: middle !important;
+            padding-top: 3px !important; /* Adjust top padding */
+            padding-bottom: 3px !important; /* Adjust bottom padding */
+        }
+
+        th, td {
+            border: 1.5px solid #575454 !important; /* Set border width to 1.5px */
+            padding-left: 3px !important; /* Adjust left padding */
+            padding-right: 3px !important; /* Adjust right padding */
+        }
+
+        th {
+            background-color: transparent !important;
+            color: #000000 !important;
+            font-weight: bold !important;
+            text-align: left; /* Align header text to the left */
+        }
+
+        tr:last-child {
+            font-weight: bold !important;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="address">
+    <div style="text-align: center; font-size: 22px; font-weight: bold;">MAK TRADER'S</div>
+    <div style="text-align: center;">C-87 Block 6 Ground Floor Karimabad Karachi Ph- 0332-2980260 NTN : 3374495-5</div>
+    <div style="text-align:center;font-weight:bold;font-size:15px;margin-top: 10px;">( Discount & Bonus Claim )</div>
+</div>
+
+<div class="header">
+    {% if (filters.from_date) { %}
+    <div class="date" style="text-align: left;float: left;">
+        <b>From Date : </b>{%= frappe.datetime.str_to_user(filters.from_date) %} <b>To Date : </b>{%= frappe.datetime.str_to_user(filters.to_date) %}
+    </div>
+{% } %}
+    <div class="date" style="text-align: right;float: right;">Printed On: {%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</div>
+</div>
+
+<table class="print-format">
+    <thead>
+    <tr><th style="width: 10%; text-align: left;">Inv#</th>
+        <th style="width: 9%; text-align: left;">Date</th>
+        <th style="width: 12%; text-align: left;">Party</th>
+        <th style="width: 15%; text-align: left;">Item</th>
+        <th style="width: 5%; text-align: right;">Qty</th>
+        <th style="width: 5%; text-align: right;">Bonus</th>
+        <th style="width: 7%; text-align: right;">TP</th>
+        <th style="width: 5%; text-align: right;">Disc<br>.%</th>
+        <th style="width: 8%; text-align: right;">Amount</th>
+        <th style="width: 8%; text-align: right;">Claim<br>/BONUS</th>
+        <th style="width: 8%; text-align: right;">Claim<br>/DISCOUNT</th>
+        <th style="width: 8%; text-align: right;">Claim<br> Amount</th>
+
+    </tr>
+    </thead>
+<tbody>
+{% for row in data %}
+
+        <tr>
+            <!-- Your table rows with currency formatting -->
+            <td style="text-align: left;">{{ row.inv_no }}</td>
+            <td style="text-align: left;">{%=frappe.datetime.str_to_user(row.posting_date) %}</td>
+            <td style="text-align: left;">{{ row.customer }}</td>
+            <td style="text-align: left;">{{ row.item_code }}</td>
+            <td style="text-align: right;">{{ row.qty }}</td>
+            <td style="text-align: right;">{{ row.bonus }}</td>
+            <td style="text-align: right;">{%= format_currency(row.tp, row.currency) %}</td>
+            <td style="text-align: right;">{{ row.disc_percent }}</td>
+            <td style="text-align: right;">{%= format_currency(row.amount, row.currency) %}</td>
+            <td style="text-align: right;"> {%= format_currency(row.claim_amount_bonus, row.currency) %}</td>
+            <td style="text-align: right;"> {%= format_currency(row.claim_amount_discount, row.currency) %}</td>
+            <td style="text-align: right;">{%= format_currency(row.claim_amount, row.currency) %}</td>
+
+        </tr>
+
+{% endfor %}
+</body>
+</html>
