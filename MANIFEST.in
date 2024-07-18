@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include ikonlab_reports *.css
+recursive-include ikonlab_reports *.csv
+recursive-include ikonlab_reports *.html
+recursive-include ikonlab_reports *.ico
+recursive-include ikonlab_reports *.js
+recursive-include ikonlab_reports *.json
+recursive-include ikonlab_reports *.md
+recursive-include ikonlab_reports *.png
+recursive-include ikonlab_reports *.py
+recursive-include ikonlab_reports *.svg
+recursive-include ikonlab_reports *.txt
+recursive-exclude ikonlab_reports *.pyc
