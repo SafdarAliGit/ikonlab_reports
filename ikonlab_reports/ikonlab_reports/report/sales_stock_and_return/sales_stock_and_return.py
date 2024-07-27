@@ -184,6 +184,7 @@ def get_data(filters):
     bonus_query = f"""
         SELECT 
             sii.item_code,
+            sii.rate AS rate,
             sii.brand,
             SUM(sii.qty) AS bonus
         FROM `tabSales Invoice` AS si, `tabSales Invoice Item` AS sii
@@ -214,8 +215,7 @@ def get_data(filters):
         (SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Purchase Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END) + SUM(CASE WHEN sle.posting_date < '{filters.get('from_date')}' THEN sle.actual_qty ELSE 0 END)) AS total_qty,
         ABS(SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty < 0 THEN sle.actual_qty ELSE 0 END)) AS out_qty,
          (((SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Purchase Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END) + SUM(CASE WHEN sle.posting_date < '{filters.get('from_date')}' THEN sle.actual_qty ELSE 0 END)) + SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END))-ABS(SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty < 0 THEN sle.actual_qty ELSE 0 END)))  AS balance_qty,
-         ((((SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Purchase Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END) + SUM(CASE WHEN sle.posting_date < '{filters.get('from_date')}' THEN sle.actual_qty ELSE 0 END)) + SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END))-ABS(SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty < 0 THEN sle.actual_qty ELSE 0 END)))*AVG(sle.incoming_rate)) AS balance_value,
-         (ABS(SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty < 0 THEN sle.actual_qty ELSE 0 END))*AVG(sle.incoming_rate)) AS out_amount
+         ((((SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Purchase Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END) + SUM(CASE WHEN sle.posting_date < '{filters.get('from_date')}' THEN sle.actual_qty ELSE 0 END)) + SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty > 0 THEN sle.actual_qty ELSE 0 END))-ABS(SUM(CASE WHEN sle.posting_date >= '{filters.get('from_date')}' AND  sle.posting_date <= '{filters.get('to_date')}' AND sle.voucher_type = 'Sales Invoice' AND sle.actual_qty < 0 THEN sle.actual_qty ELSE 0 END)))*AVG(sle.incoming_rate)) AS balance_value
          
     FROM `tabStock Ledger Entry` AS sle, `tabItem` AS item
     WHERE
