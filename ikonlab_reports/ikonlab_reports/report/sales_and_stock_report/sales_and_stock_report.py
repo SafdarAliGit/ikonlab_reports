@@ -114,7 +114,7 @@ def get_data(filters):
         COALESCE(AVG(pii.rate), 0) AS purchase_rate,
         (COALESCE(SUM(pii.qty), 0) * COALESCE(AVG(pii.rate), 0)) AS purchase_amount,
         SUM(sle.actual_qty) AS balance_stock,
-        SUM(sle.actual_qty) * AVG(sle.incoming_rate)) AS balance_stock_amount
+        (SUM(sle.actual_qty) * AVG(sle.incoming_rate)) AS balance_stock_amount
 
     FROM `tabStock Ledger Entry` AS sle
     LEFT JOIN `tabSales Invoice Item` AS sii ON sii.name = sle.voucher_detail_no AND sle.voucher_type = 'Sales Invoice'
