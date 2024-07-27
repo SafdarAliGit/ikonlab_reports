@@ -25,12 +25,12 @@ def get_columns():
             "fieldtype": "Float",
             "width": 100
         },
-        {
-            "label": _("Incoming Rate"),
-            "fieldname": "incoming_rate",
-            "fieldtype": "Currency",
-            "width": 100
-        },
+        # {
+        #     "label": _("Incoming Rate"),
+        #     "fieldname": "incoming_rate",
+        #     "fieldtype": "Currency",
+        #     "width": 100
+        # },
         {
             "label": _("Sold Qty"),
             "fieldname": "sold_qty",
@@ -113,8 +113,8 @@ def get_data(filters):
         COALESCE(SUM(pii.qty), 0) AS purchased_qty,
         COALESCE(AVG(pii.rate), 0) AS purchase_rate,
         (COALESCE(SUM(pii.qty), 0) * COALESCE(AVG(pii.rate), 0)) AS purchase_amount,
-        ((COALESCE(SUM(sle.actual_qty),0) + COALESCE(SUM(pii.qty), 0)) - COALESCE(SUM(sii.qty), 0)) AS balance_stock,
-        (((COALESCE(SUM(sle.actual_qty),0) + COALESCE(SUM(pii.qty), 0)) - COALESCE(SUM(sii.qty), 0)) * AVG(sle.incoming_rate)) AS balance_stock_amount
+        SUM(sle.actual_qty) AS balance_stock,
+        SUM(sle.actual_qty) * AVG(sle.incoming_rate)) AS balance_stock_amount
 
     FROM `tabStock Ledger Entry` AS sle
     LEFT JOIN `tabSales Invoice Item` AS sii ON sii.name = sle.voucher_detail_no AND sle.voucher_type = 'Sales Invoice'
