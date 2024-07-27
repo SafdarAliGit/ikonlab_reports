@@ -20,8 +20,8 @@ def get_columns():
             "width": 100,
         },
         {
-            "label": _("Actual Qty"),
-            "fieldname": "actual_qty",
+            "label": _("Opening Qty"),
+            "fieldname": "opening_qty",
             "fieldtype": "Float",
             "width": 100
         },
@@ -105,7 +105,7 @@ def get_data(filters):
     stock_balance_query = f"""
     SELECT 
         sle.item_code,
-        SUM(sle.actual_qty) AS actual_qty,
+        ((COALESCE(SUM(sle.actual_qty),0) + COALESCE(SUM(sii.qty), 0)) - COALESCE(SUM(pii.qty), 0)) AS opening_qty,
         AVG(sle.incoming_rate) AS incoming_rate,
         COALESCE(SUM(sii.qty), 0) AS sold_qty,
         COALESCE(AVG(sii.rate), 0) AS sale_rate,
