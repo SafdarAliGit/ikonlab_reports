@@ -39,12 +39,6 @@ def get_columns():
         },
 
         {
-            "label": _("Sale Rate"),
-            "fieldname": "sale_rate",
-            "fieldtype": "Currency",
-            "width": 100
-        },
-        {
             "label": _("Sale Amount"),
             "fieldname": "sale_amount",
             "fieldtype": "Currency",
@@ -58,12 +52,6 @@ def get_columns():
         },
 
         {
-            "label": _("Purchase Rate"),
-            "fieldname": "purchase_rate",
-            "fieldtype": "Currency",
-            "width": 100
-        },
-        {
             "label": _("Purchase Amount"),
             "fieldname": "purchase_amount",
             "fieldtype": "Currency",
@@ -75,7 +63,18 @@ def get_columns():
             "fieldtype": "Float",
             "width": 100
         },
-
+        {
+            "label": _("Return Qty"),
+            "fieldname": "return_qty",
+            "fieldtype": "Float",
+            "width": 100
+        },
+        {
+            "label": _("Return Amount"),
+            "fieldname": "return_amount",
+            "fieldtype": "Currency",
+            "width": 140
+        },
         {
             "label": _("Balance Stock Amount"),
             "fieldname": "balance_stock_amount",
@@ -107,12 +106,12 @@ def get_data(filters):
         sle.item_code,
         ((COALESCE(SUM(sle.actual_qty),0) + COALESCE(SUM(sii.qty), 0)) - COALESCE(SUM(pii.qty), 0)) AS opening_qty,
         AVG(sle.incoming_rate) AS incoming_rate,
-        COALESCE(SUM(sii.qty), 0) AS sold_qty,
-        COALESCE(AVG(sii.rate), 0) AS sale_rate,
-        (COALESCE(SUM(sii.qty), 0) * COALESCE(AVG(sii.rate), 0)) AS sale_amount,
+        COALESCE(SUM(CASE WHEN sii.qty > 0 THEN sii.qty ELSE 0 END), 0) AS sold_qty,
+        ABS(COALESCE(SUM(CASE WHEN sii.qty < 0 THEN sii.qty ELSE 0 END), 0)) AS return_qty,
+        ABS(COALESCE(SUM(CASE WHEN sii.amount < 0 THEN sii.amount ELSE 0 END), 0)) AS return_amount,
+        COALESCE(SUM(CASE WHEN sii.amount > 0 THEN sii.amount ELSE 0 END), 0) AS sale_amount,
         COALESCE(SUM(pii.qty), 0) AS purchased_qty,
-        COALESCE(AVG(pii.rate), 0) AS purchase_rate,
-        (COALESCE(SUM(pii.qty), 0) * COALESCE(AVG(pii.rate), 0)) AS purchase_amount,
+        COALESCE(SUM(pii.amount), 0) AS purchase_amount,
         SUM(sle.actual_qty) AS balance_stock,
         (SUM(sle.actual_qty) * AVG(sle.incoming_rate)) AS balance_stock_amount
 
